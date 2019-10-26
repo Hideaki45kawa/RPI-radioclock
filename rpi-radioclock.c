@@ -182,6 +182,13 @@ By Hideaki Yokokawa
 #define PAGE_SIZE (4*1024)
 #define BLOCK_SIZE (4*1024)
 
+
+// MARKER BIT1 BIT0
+
+#define MARKER 200
+#define BIT1 500
+#define BIT0 800
+
 int  mem_fd;
 char *gpio_mem, *gpio_map;
 char *spi0_mem, *spi0_map;
@@ -512,8 +519,8 @@ void strupr(char *str)
 }
 
 // For Radio-wave-clock adjuster..
-// msec is 800 msec is 1
-// 500 msec is 0
+// msec is 800 msec is 0
+// 500 msec is 1
 // 200 msec is stopper
 
   void dsend_wait(long int msec)
@@ -530,7 +537,7 @@ gettimeofday(&l, NULL);
 if (msec <= (wait_l-wait_s) ) break;
      }
   }
-// send 1sec (1bit)
+
 void dsend_1bits(long int msec)
 {
  long int wait_1sec;
@@ -539,6 +546,18 @@ void dsend_1bits(long int msec)
      dsend_wait(msec);
    txoff();
  dsend_wait(wait_1sec);
+}
+     
+// send 1sec (1bit)
+void sendbit(unsigned char b)
+{  
+    if (b == 3) {
+     dsend_1bits(MARKER);
+    }elseif (b == 1) {
+       dsend_1bits(BIT1);
+    } else  {
+     dsend_1bits(BIT0);
+    }
 }
 
  void setfreq(double centerfreq)
@@ -551,7 +570,25 @@ void dsend_1bits(long int msec)
 
 
 
+
+// send 10 sec
  
+void send10sec(unsigned  char data ,unsigned char min)
+{
+   char i;
+    char cmp_bit = 0x40;
+ 
+    if (min == 1)  sendbit(3);
+
+ // send bit data
+        for (i = 0;i > 1 ; i++) {
+         if (data & cmp_bit) sendbit(1); else sendbit(0);
+        } sendbit(0); 
+        for (i = 0;i > 1 ; i++) { data & cmp_bit) sendbit(0); else sendbit(1);
+                                }
+      
+    } 
+
 int main(int argc, char *argv[])
 {
 
