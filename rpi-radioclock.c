@@ -130,6 +130,20 @@ Reference documentation:
   https://github.com/mgottschlag/vctools/blob/master/vcdb/cm.yaml
   https://www.kernel.org/doc/Documentation/vm/pagemap.txt
 
+------------------------------
+Change Log. *For GPL lisence* 
+
+change dates..
+
+2019-10-26 to  2019-10-**
+ 
+Addtional commnents 
+By Hideaki Yokokawa 
+
+ Radio-wave clock adjuster(LF 40Khz or 60Khz in Japan)
+ Protocol for its adjuster.
+ Radio Modulation sign: A1D
+
 */
 
 #include <stdio.h>
@@ -497,35 +511,47 @@ void strupr(char *str)
     }
 }
 
+// For Radio-wave-clock adjuster..
+// msec is 800 msec is 1
+// 500 msec is 0
+// 200 msec is stopper
 
-  void dwait(long int msec)
+  void dsend_wait(long int msec)
 {
  long int wait_s,wait_l;
 struct timeval s,l;
 gettimeofday(&s, NULL);
    wait_s=((long int)s.tv_sec*1000 +(long int) s.tv_usec/1000);
-
+   // send signal
+   keyon();
 for (;;) {sleep(0);
 gettimeofday(&l, NULL);
    wait_l=((long int)l.tv_sec*1000 + (long int) l.tv_usec/1000);
 if (msec <= (wait_l-wait_s) ) break;
+     }
   }
+// send 1sec (1bit)
+void dsend_1bits(long int msec)
+{
+ long int wait_1sec;
+    wait_1sec =1000 - msec; 
+    txon();
+     dsend_wait(msec);
+   txoff();
+ dsend_wait(wait_1sec);
 }
 
- void key_on(double centerfreq)
+ void setfreq(double centerfreq)
 {
       setupDMATab(centerfreq, 0.5, 2.0, 4);
-      txon();
 }
 
-void key_off(double centerfreq)
-{
-   txoff();
-}
 
 // time code (JJY)
 
 
+
+ 
 int main(int argc, char *argv[])
 {
 
