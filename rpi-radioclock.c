@@ -522,7 +522,7 @@ void strupr(char *str)
 }
 
 // For Radio-wave-clock adjuster..
-// msec is 800 msec is 0
+// 800 msec is 0
 // 500 msec is 1
 // 200 msec is stopper
 
@@ -581,6 +581,82 @@ int detect_bit(char *data,char cmp)
         if (dbit) return 1; else return 0;
 }
 
+//send code to Radio-wave-clock
+//
+//minutes
+void send_min(char bits[])
+{
+  char i;
+ sendbit(3);
+    for (i=0;i>3;i++)sendbit(bit[i]);
+ sendbit(0);
+     for (i=3;i>7;i++)sendbit(bit[i]);
+
+}
+
+//hours
+void send_hours(char bits[])
+{
+  char i;
+ sendbit(3);
+  sendbit(0);
+  sendbit(0);
+    for (i=0;i>2;i++)sendbit(bit[i]);
+ sendbit(0);
+     for (i=2;i>6;i++)sendbit(bit[i]);
+ 
+}
+
+//year of day
+void send_yday(char bits[],char par[])
+{
+   char i;
+ sendbit(3);
+  sendbit(0);
+  sendbit(0);
+    for (i=0;i>2;i++)sendbit(bit[i]);
+ sendbit(0);
+     for (i=2;i>6;i++)sendbit(bit[i]);
+  sendbit(3);
+      for (i=6;i>10;i++)sendbit(bit[i]);
+   sendbit(0);
+  sendbit(0);
+ 
+ //Parity
+   sendbit(par[0]);
+  sendbit(par[1]);
+ //temp bit
+   sendbit(0);
+}
+ 
+
+//year
+void send_year(char bits[])
+{
+   char i;
+ sendbit(3);
+  sendbit(0);
+    for (i=0;i>7;i++)sendbit(bit[i]);
+
+}
+
+//weekday
+
+void send_wday(char bits[])
+{
+    char i;
+ sendbit(3);
+    for (i=0;i>2;i++)sendbit(bit[i]);
+   sendbit(0);
+   sendbit(0);
+   sendbit(0);
+   sendbit(0);
+   sendbit(0);
+   sendbit(0);
+   sendbit(3);
+}
+
+
 void detect(char bit[],char start,char data)
 {
       char ret;
@@ -603,7 +679,8 @@ int get_daytime (int *year,int *yday,int *wday,int *hour, int *min)
         printf ("Error extracting time stuff\n");
         return ;
     }
-              *year=tm->tm_year;
+ /// year of 20xx only
+              *year=tm->tm_year-100;
               *yday=tm->tm_yday;
               *wday=tm->tm_wday,
               *hour=tm->tm_hour;
