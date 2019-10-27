@@ -563,6 +563,18 @@ void send_wday(char bits[])
 }
 
 
+void parity(char bmin[],char bhour[],char par[])
+{
+   char i;
+      par[0]=0;
+    for (i=0;i<7;i++)par[0]=par[0]^bmin[i];
+      par[1]=0;
+   for (i=0;i<6;i++)par[1]=par[1]^bhour[i];
+
+}
+
+
+
 void detect(char bit[],char start,char data)
 {
       char ret;
@@ -618,7 +630,8 @@ int main(int argc, char *argv[])
   double centerfreq;  
  int year,yday,wday,hour,min;
  char byear[9],byday[11],bwday[4],bhour[7],bmin[8];
- 
+ char par[2];
+    
   if (argc < 1){
    printf("Usage: radclock <send frequency(Hz)> \n");
 exit(0);
@@ -632,7 +645,8 @@ exit(0);
  
  // waiting time for 1st 0sec
  loop0sec();
- 
+ printf("Start send Adjust signal\n");
+   
  // get paras
 ret= get_daytime (&year,&yday,&wday,&hour,&min)
         detect(byear,2,(char)year);
@@ -641,6 +655,14 @@ ret= get_daytime (&year,&yday,&wday,&hour,&min)
       detect(bhour,4,(char)hour);
    detect(bmin,3,(char)min);
  
- 
+ parity(bmin,bhour,par);
+    printf("Start send Adjust signal\n");
+   
+    send_min(bmin);
+   send_hours(bhour);
+    send_yday(byday,par);
+   send_year(byear);
+   send_wday(bwday);
+   
   return 0;
 }
