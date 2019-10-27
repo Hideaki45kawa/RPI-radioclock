@@ -28,7 +28,10 @@ Old credits:
   In addition time-synchronisation and double amount of power output was 
   implemented. 
 
+Code Writter Add.(Credits) 
+  Credis goes to James Peroulas,wrirter of WsprrPi[2],based on idea of frequency generarion and frequeency shift.
   [1] PiFM code from http://www.icrobotics.co.uk/wiki/index.php/Turning_the_Raspberry_Pi_Into_an_FM_Transmitter
+  [2] WsprrPi Code from  https://github.com/JamesP6000/WsprryPi
 
 Reference documentation:
   http://www.raspberrypi.org/wp-content/uploads/2012/02/BCM2835-ARM-Peripherals.pdf
