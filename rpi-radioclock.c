@@ -629,6 +629,7 @@ int main(int argc, char *argv[])
 {
   double centerfreq;  
  int year,yday,wday,hour,min;
+  int ret;
  char byear[9],byday[11],bwday[4],bhour[7],bmin[8];
  char par[2];
     
