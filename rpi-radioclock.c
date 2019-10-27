@@ -463,14 +463,14 @@ void sendbit(unsigned char b)
 {  
     if (b == 3) {
      dsend_1bits(MARKER);
-    }elseif (b == 1) {
+    }else if (b == 1) {
        dsend_1bits(BIT1);
     } else  {
      dsend_1bits(BIT0);
     }
 }
 
- void setfreq(double centerfreq)
+ void dsetfreq(double centerfreq)
 {
       setupDMATab(centerfreq, 0.5, 2.0, 4);
 }
@@ -491,7 +491,7 @@ int detect_bit(char *data,char cmp)
 //send code to Radio-wave-clock
 //
 //minutes
-void send_min(char bits[])
+void send_min(char bit[])
 {
   char i;
  sendbit(3);
@@ -502,7 +502,7 @@ void send_min(char bits[])
 }
 
 //hours
-void send_hours(char bits[])
+void send_hours(char bit[])
 {
   char i;
  sendbit(3);
@@ -515,7 +515,7 @@ void send_hours(char bits[])
 }
 
 //year of day
-void send_yday(char bits[],char par[])
+void send_yday(char bit[],char par[])
 {
    char i;
  sendbit(3);
@@ -538,7 +538,7 @@ void send_yday(char bits[],char par[])
  
 
 //year
-void send_year(char bits[])
+void send_year(char bit[])
 {
    char i;
  sendbit(3);
@@ -549,7 +549,7 @@ void send_year(char bits[])
 
 //weekday
 
-void send_wday(char bits[])
+void send_wday(char bit[])
 {
     char i;
  sendbit(3);
@@ -596,7 +596,7 @@ int get_daytime (int *year,int *yday,int *wday,int *hour, int *min)
     now = time(0);
     if ((tm = localtime (&now)) == NULL) {
         printf ("Error extracting time stuff\n");
-        return ;
+        return -1;
     }
  /// year of 20xx only
               *year=tm->tm_year-100;
@@ -604,11 +604,10 @@ int get_daytime (int *year,int *yday,int *wday,int *hour, int *min)
               *wday=tm->tm_wday,
               *hour=tm->tm_hour;
               *min=tm->tm_min;
-    return ;
+    return 0;
 }
 
- 
-}
+
  void loop0sec(void)
  {
          time_t now;
@@ -623,8 +622,8 @@ int get_daytime (int *year,int *yday,int *wday,int *hour, int *min)
     sleep(0);
              sec=tm->tm_sec;
                if (sec == 0) break;
-  }
-  
+      }
+ }
 
 int main(int argc, char *argv[])
 {
@@ -642,14 +641,14 @@ exit(0);
   setupDMA();
   txoff();
     centerfreq = atof(argv[1]);
-   setfreq(centerfreq);
+   dsetfreq(centerfreq);
  
  // waiting time for 1st 0sec
  loop0sec();
  printf("Start send Adjust signal\n");
    
  // get paras
-ret= get_daytime (&year,&yday,&wday,&hour,&min)
+ret= get_daytime (&year,&yday,&wday,&hour,&min);
         detect(byear,2,(char)year);
           detect(byday,0,(char)yday);
         detect(bwday,7,(char)wday);
