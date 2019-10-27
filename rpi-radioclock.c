@@ -492,9 +492,9 @@ void send_min(char bits[])
 {
   char i;
  sendbit(3);
-    for (i=0;i>3;i++)sendbit(bit[i]);
+    for (i=0;i<3;i++)sendbit(bit[i]);
  sendbit(0);
-     for (i=3;i>7;i++)sendbit(bit[i]);
+     for (i=3;i<7;i++)sendbit(bit[i]);
 
 }
 
@@ -505,9 +505,9 @@ void send_hours(char bits[])
  sendbit(3);
   sendbit(0);
   sendbit(0);
-    for (i=0;i>2;i++)sendbit(bit[i]);
+    for (i=0;i<2;i++)sendbit(bit[i]);
  sendbit(0);
-     for (i=2;i>6;i++)sendbit(bit[i]);
+     for (i=2;i<6;i++)sendbit(bit[i]);
  
 }
 
@@ -518,11 +518,11 @@ void send_yday(char bits[],char par[])
  sendbit(3);
   sendbit(0);
   sendbit(0);
-    for (i=0;i>2;i++)sendbit(bit[i]);
+    for (i=0;i<2;i++)sendbit(bit[i]);
  sendbit(0);
-     for (i=2;i>6;i++)sendbit(bit[i]);
+     for (i=2;i<6;i++)sendbit(bit[i]);
   sendbit(3);
-      for (i=6;i>10;i++)sendbit(bit[i]);
+      for (i=6;i<10;i++)sendbit(bit[i]);
    sendbit(0);
   sendbit(0);
  
@@ -540,7 +540,7 @@ void send_year(char bits[])
    char i;
  sendbit(3);
   sendbit(0);
-    for (i=0;i>7;i++)sendbit(bit[i]);
+    for (i=0;i<7;i++)sendbit(bit[i]);
 
 }
 
@@ -550,7 +550,7 @@ void send_wday(char bits[])
 {
     char i;
  sendbit(3);
-    for (i=0;i>2;i++)sendbit(bit[i]);
+    for (i=0;i<2;i++)sendbit(bit[i]);
    sendbit(0);
    sendbit(0);
    sendbit(0);
