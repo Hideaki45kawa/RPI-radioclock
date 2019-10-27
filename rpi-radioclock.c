@@ -144,6 +144,9 @@ By Hideaki Yokokawa
  Protocol for its adjuster.
  Radio Modulation sign: A1D
 
+to compile
+
+gcc 
 */
 
 #include <stdio.h>
@@ -568,36 +571,70 @@ void sendbit(unsigned char b)
 
 // time code (JJY)
 
+// detect Bits
 
-
-
-// send 10 sec
- 
-void send10sec(unsigned  char data ,unsigned char min)
+int detect_bit(char *data,char cmp)
 {
-   char i;
-    char cmp_bit = 0x40;
- 
-    if (min == 1)  sendbit(3);
+  int dbit;
+      dbit= *data/cmp;
+        *data=*data-dbit*cmp;
+        if (dbit) return 1; else return 0;
+}
 
- // send bit data
-        for (i = 0;i > 1 ; i++) {
-         if (data & cmp_bit) sendbit(1); else sendbit(0);
-        } sendbit(0); 
-        for (i = 0;i > 1 ; i++) { data & cmp_bit) sendbit(0); else sendbit(1);
-                                }
-      
-    } 
+void detect(char bit[],char start,char data)
+{
+      char ret;
+         char i,k;
+ k=0;
+       int cmp[]={200,100,80,40,20,10,8,4,2,1};
+   for (i=start;i<10;i++){
+       bit[k]=detect_bit(&data,cmp[i]);
+       k++; }
+}
+
+
+///get year yday,wday,hour,min
+int get_daytime (int *year,int *yday,int *wday,int *hour, int *min)
+{
+       time_t now;
+    struct tm *tm;
+    now = time(0);
+    if ((tm = localtime (&now)) == NULL) {
+        printf ("Error extracting time stuff\n");
+        return ;
+    }
+              *year=tm->tm_year;
+              *yday=tm->tm_yday;
+              *wday=tm->tm_wday,
+              *hour=tm->tm_hour;
+              *min=tm->tm_min;
+    return ;
+}
+
+ 
+}
+ void loop0sec(void)
+ {
+         time_t now;
+    struct tm *tm;
+     int sec;
+  for (;;){
+    now = time(0);
+    if ((tm = localtime (&now)) == NULL) {
+        printf ("Error extracting time stuff\n");
+        return ;
+    }
+    sleep(0);
+             sec=tm->tm_sec;
+               if (sec == 0) break;
+  }
+  
 
 int main(int argc, char *argv[])
 {
-
-   FILE *fp;
-  int i;
-  double centerfreq,shiftfreq=0;  
-   int ti;
-   unsigned char message[32768];  
- fsk=0;
+  double centerfreq;  
+ int year,yday,wday,hour,min;
+ char byear[9],byday[11],bwday[4],bhour[7],bmin[8];
  
   if (argc < 1){
    printf("Usage: radclock <send frequency(Hz)> \n");
@@ -605,18 +642,22 @@ exit(0);
 }
   setup_io();
   setup_gpios(); 
-
   setupDMA();
-//  txoff();
-
-
+  txoff();
     centerfreq = atof(argv[1]);
-
-for (;;){
-    gettxt(argv[4],message);
-    encode(message,centerfreq,shiftfreq);
- txon();
- wait_every(ti);
-}
+   setfreq(centerfreq);
+ 
+ // waiting time for 1st 0sec
+ loop0sec();
+ 
+ // get paras
+ret= get_daytime (&year,&yday,&wday,&hour,&min)
+        detect(byear,2,(char)year);
+          detect(byday,0,(char)yday);
+        detect(bwday,7,(char)wday);
+      detect(bhour,4,(char)hour);
+   detect(bmin,3,(char)min);
+ 
+ 
   return 0;
 }
