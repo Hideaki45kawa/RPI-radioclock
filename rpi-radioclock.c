@@ -438,8 +438,6 @@ void strupr(char *str)
 struct timeval s,l;
 gettimeofday(&s, NULL);
    wait_s=((long int)s.tv_sec*1000 +(long int) s.tv_usec/1000);
-   // send signal
-   keyon();
 for (;;) {sleep(0);
 gettimeofday(&l, NULL);
    wait_l=((long int)l.tv_sec*1000 + (long int) l.tv_usec/1000);
@@ -658,6 +656,7 @@ ret= get_daytime (&year,&yday,&wday,&hour,&min)
  parity(bmin,bhour,par);
     printf("Start send Adjust signal\n");
    
+   //send 1 min.
     send_min(bmin);
    send_hours(bhour);
     send_yday(byday,par);
