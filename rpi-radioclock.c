@@ -422,6 +422,15 @@ void setup_gpios()
 
 }
 
+void setuptx(void)
+{
+   
+   txon();
+   setup_io();
+  setup_gpios(); 
+  setupDMA();
+  txoff();
+}
 void strupr(char *str) 
 {   while(*str) 
     { 
@@ -637,10 +646,8 @@ int main(int argc, char *argv[])
    printf("Usage: radclock <send frequency(Hz)> \n");
 exit(0);
 }
-  setup_io();
-  setup_gpios(); 
-  setupDMA();
-  txoff();
+   
+setuptx();
     centerfreq = atof(argv[1]);
    dsetfreq(centerfreq);
  
